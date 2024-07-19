@@ -22,8 +22,14 @@ export default function Upload() {
 
         if (image) {
             const storageRef = ref(storage, `images/${image.name}`);
-            const snapshot = await uploadBytes(storageRef, image);
-            imageUrl = await getDownloadURL(snapshot.ref);
+            try {
+                const snapshot = await uploadBytes(storageRef, image);
+                imageUrl = await getDownloadURL(snapshot.ref);
+            } catch (uploadError) {
+                console.error("Error uploading image: ", uploadError);
+                alert("Error uploading image");
+                return;
+            }
         }
 
         try {
@@ -34,8 +40,10 @@ export default function Upload() {
             });
             console.log("Document written with ID: ", docRef.id);
             alert("Obituary added");
+            router.push('../');
         } catch (e) {
             console.error("Error adding document: ", e);
+            alert("Error adding document");
         }
     };
 
