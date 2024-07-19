@@ -20,10 +20,13 @@ export default function Home() {
   useEffect(() => {
     const fetchObituaries = async () => {
       const querySnapshot = await getDocs(collection(db, 'obituaries'));
-      const obituariesList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...(doc.data() as Obituary),
-      }));
+      const obituariesList = querySnapshot.docs.map(doc => {
+        const data = doc.data() as Omit<Obituary, 'id'>;
+        return {
+          id: doc.id,
+          ...data,
+        };
+      });
       setObituaries(obituariesList);
     };
     fetchObituaries();
